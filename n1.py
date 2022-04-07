@@ -6,26 +6,16 @@ from events import Events
 from shader import Shader
 
 import OpenGL.GL as GL
-from ogl2 import init_gl_rot, draw_cube
+from ogl3 import init_gl_rot, draw_cube, init_gl2, draw_2
 
 from numpy import array, eye, zeros, float32, uint32
-
-#vertices = array(
-#		[0.0, 0.0, 0.0,
-#		 1.0, 0.0, 0.0,
-#		 0.0, 1.0, 0.0],
-#		dtype=float32, )
 
 def main():
 	display_size = (640, 480)
 	Window.init(display_size)
 	Events.init()
-	p = init_gl_rot(display_size)
-
-	#shader = Shader("res\shaders\sh1.glslv", "res\shaders\sh1.glslf")
-	#if shader.program is None:
-	#	terminate()
-	#	exit(1)
+	#p = init_gl_rot(display_size)
+	init_gl2()
 
 	GL.glClearColor(0.5, 0.5, 0.5, 1)
 	while Window.window.going:
@@ -36,17 +26,10 @@ def main():
 			GL.glClearColor(1, 0, 0, 1)
 		if Events.events.j_clicked(3):
 			GL.glClearColor(0.5, 0.5, 0.5, 1)
-		#Window.window.update()
-		#draw_cube(p)
 
 		GL.glClear(GL.GL_COLOR_BUFFER_BIT)
-		draw_cube(p)
-		#shader.use()
-		#GL.glBindVertexArray(VAO)
-		#GL.glDrawArrays(GL.GL_TRIANGLES, 0, 3)
-		#GL.glBindVertexArray(0)
-		#GL.glDrawArrays(GL.GL_POINT, 0, 1)
-
+		#draw_cube(p)
+		draw_2()
 		flip()
 	terminate()
 

@@ -51,6 +51,37 @@ def _create_shader(vShader_file_name, fShader_file_name):
 	GL.glDetachShader(program, fragment)
 	return program
 
+def init_gl2():
+	vertices = array([
+		-.5, -.5, 0,
+		.5, -.5, 0,
+		-.5, .5, 0,
+		
+		-.5, .5, 0,
+		.5, .5, 0,
+		.5, -.5, 0], dtype=float32)
+
+	program = _create_shader("res/shaders/sh2.vert","res/shaders/sh2.frag")
+	GL.glUseProgram(program)
+
+	GL.glBindVertexArray(GL.glGenVertexArrays(1))
+
+	shader_data = GL.glGenBuffers(1)
+	GL.glBindBuffer(GL.GL_ARRAY_BUFFER, shader_data)
+	GL.glBufferData(GL.GL_ARRAY_BUFFER, vertices.nbytes, vertices, GL.GL_DYNAMIC_DRAW)
+
+	stride = int(vertices.nbytes / 6)
+	offset = ctypes.c_void_p(0)
+
+	loc = GL.glGetAttribLocation(program, "vertex_position")
+	GL.glEnableVertexAttribArray(loc)
+	GL.glVertexAttribPointer(loc, 3, GL.GL_FLOAT, False, stride, offset)
+
+
+def draw_2():
+	#GL.glPointSize(10.0)
+	GL.glDrawArrays(GL.GL_TRIANGLES, 0, 6)
+
 def init_gl(display_size):
 	# Create shaders
 	# --------------------------------------
@@ -104,11 +135,11 @@ def init_gl(display_size):
 
 	shader_data["buffer"]["filled"] = GL.glGenBuffers(1)
 	GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, shader_data["buffer"]["filled"])
-	GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, filled_cube_indices.nbytes, filled_cube_indices, GL.GL_STATIC_DRAW,)
+	GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, filled_cube_indices.nbytes, filled_cube_indices, GL.GL_STATIC_DRAW)
 
 	shader_data["buffer"]["outline"] = GL.glGenBuffers(1)
 	GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, shader_data["buffer"]["outline"])
-	GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, outline_cube_indices.nbytes, outline_cube_indices, GL.GL_STATIC_DRAW,)
+	GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, outline_cube_indices.nbytes, outline_cube_indices, GL.GL_STATIC_DRAW)
 
 	shader_data["constants"]["model"] = GL.glGetUniformLocation(program, "model")
 	GL.glUniformMatrix4fv(shader_data["constants"]["model"], 1, False, eye(4))
@@ -127,9 +158,7 @@ def init_gl(display_size):
 
 	# This colour is added on to the base vertex colour in producing
 	# the final output
-	shader_data["constants"]["colour_add"] = GL.glGetUniformLocation(
-		program, "colour_add"
-	)
+	shader_data["constants"]["colour_add"] = GL.glGetUniformLocation(program, "colour_add")
 	GL.glUniform4f(shader_data["constants"]["colour_add"], 0, 0, 0, 0)
 
 	# Set GL drawing data
@@ -169,9 +198,7 @@ def draw_cube(p):
 	GL.glUniform4f(shader_data["constants"]["colour_mul"], 1, 1, 1, 1)
 	GL.glUniform4f(shader_data["constants"]["colour_add"], 0, 0, 0, 0.0)
 	GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, shader_data["buffer"]["filled"])
-	GL.glDrawElements(
-		GL.GL_TRIANGLES, len(filled_cube_indices), GL.GL_UNSIGNED_INT, None
-	)
+	GL.glDrawElements(GL.GL_TRIANGLES, len(filled_cube_indices), GL.GL_UNSIGNED_INT, None)
 
 	# Outlined cube
 	GL.glDisable(GL.GL_POLYGON_OFFSET_FILL)

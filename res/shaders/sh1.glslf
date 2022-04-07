@@ -1,8 +1,7 @@
-#version 330 core
-
-out vec4 f_color;
-
+#version 150
+in vec4 vertex_color_out;  // vertex colour from vertex shader
+out vec4 fragColor;
 void main()
 {
-	f_color = vec4(1.0, 0.0, 0.0, 1.0);
+	fragColor = vertex_color_out;
 }
