@@ -64,10 +64,11 @@ def init_gl2():
 	program = _create_shader("res/shaders/sh2.vert","res/shaders/sh2.frag")
 	GL.glUseProgram(program)
 
-	GL.glBindVertexArray(GL.glGenVertexArrays(1))
+	VAO = GL.glGenVertexArrays(1)
+	GL.glBindVertexArray(VAO)
 
-	shader_data = GL.glGenBuffers(1)
-	GL.glBindBuffer(GL.GL_ARRAY_BUFFER, shader_data)
+	VBO = GL.glGenBuffers(1)
+	GL.glBindBuffer(GL.GL_ARRAY_BUFFER, VBO)
 	GL.glBufferData(GL.GL_ARRAY_BUFFER, vertices.nbytes, vertices, GL.GL_DYNAMIC_DRAW)
 
 	stride = int(vertices.nbytes / 6)
@@ -76,11 +77,16 @@ def init_gl2():
 	loc = GL.glGetAttribLocation(program, "vertex_position")
 	GL.glEnableVertexAttribArray(loc)
 	GL.glVertexAttribPointer(loc, 3, GL.GL_FLOAT, False, stride, offset)
+	GL.glBindVertexArray(0)
+	return VAO, VBO
 
 
-def draw_2():
+def draw_2(p):
+	VAO,VBO = p
 	#GL.glPointSize(10.0)
+	GL.glBindVertexArray(VAO)
 	GL.glDrawArrays(GL.GL_TRIANGLES, 0, 6)
+	GL.glBindVertexArray(0)
 
 def init_gl(display_size):
 	# Create shaders

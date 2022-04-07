@@ -10,12 +10,14 @@ from ogl3 import init_gl_rot, draw_cube, init_gl2, draw_2
 
 from numpy import array, eye, zeros, float32, uint32
 
+from texture import load_im
+
 def main():
 	display_size = (640, 480)
 	Window.init(display_size)
 	Events.init()
 	#p = init_gl_rot(display_size)
-	init_gl2()
+	p = init_gl2()
 
 	GL.glClearColor(0.5, 0.5, 0.5, 1)
 	while Window.window.going:
@@ -29,7 +31,7 @@ def main():
 
 		GL.glClear(GL.GL_COLOR_BUFFER_BIT)
 		#draw_cube(p)
-		draw_2()
+		draw_2(p)
 		flip()
 	terminate()
 

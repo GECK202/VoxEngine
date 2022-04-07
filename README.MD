@@ -12,6 +12,8 @@ pip install numpy
 
 pip install PyOpenGL
 
+pip install --upgrade Pillow
+
 
 python3 n1.py #(in windows: python n1.py)
  
