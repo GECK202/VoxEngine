@@ -48,10 +48,16 @@ def main():
 		if e.j_clicked(3):
 			GL.glClearColor(0.5, 0.5, 0.5, 1)
 		if e.pressed(pg.K_w):
-			cam.pos.z -= 0.016
+			cam.pos += (cam.front * 0.016)
 			projview = cam.get_m_proj_view()
 		if e.pressed(pg.K_s):
-			cam.pos.z += 0.016
+			cam.pos -= (cam.front * 0.016)
+			projview = cam.get_m_proj_view()
+		if e.pressed(pg.K_a):
+			cam.pos += (cam.right * 0.016)
+			projview = cam.get_m_proj_view()
+		if e.pressed(pg.K_d):
+			cam.pos -= (cam.right * 0.016)
 			projview = cam.get_m_proj_view()
 
 		GL.glClear(GL.GL_COLOR_BUFFER_BIT)
