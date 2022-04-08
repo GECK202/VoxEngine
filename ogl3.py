@@ -53,13 +53,13 @@ def _create_shader(vShader_file_name, fShader_file_name):
 
 def init_gl2():
 	vertices = array([
-		-.5, -.5, 0,
-		.5, -.5, 0,
-		-.5, .5, 0,
+		-.5, -.5, 0, 0, 1,
+		.5, -.5, 0, 1, 1,
+		-.5, .5, 0, 0, 0,
 		
-		-.5, .5, 0,
-		.5, .5, 0,
-		.5, -.5, 0], dtype=float32)
+		-.5, .5, 0, 0, 0,
+		.5, .5, 0, 1, 0,
+		.5, -.5, 0, 1, 1], dtype=float32)
 
 	program = _create_shader("res/shaders/sh2.vert","res/shaders/sh2.frag")
 	GL.glUseProgram(program)
@@ -71,20 +71,27 @@ def init_gl2():
 	GL.glBindBuffer(GL.GL_ARRAY_BUFFER, VBO)
 	GL.glBufferData(GL.GL_ARRAY_BUFFER, vertices.nbytes, vertices, GL.GL_DYNAMIC_DRAW)
 
-	stride = int(vertices.nbytes / 6)
-	offset = ctypes.c_void_p(0)
+	size = int(int(vertices.nbytes / 6) / 5)
+	stride = 5 * size
+	offset1 = ctypes.c_void_p(0 * size)
+	offset2 = ctypes.c_void_p(3 * size)
 
-	loc = GL.glGetAttribLocation(program, "vertex_position")
+	loc = GL.glGetAttribLocation(program, "v_position")
 	GL.glEnableVertexAttribArray(loc)
-	GL.glVertexAttribPointer(loc, 3, GL.GL_FLOAT, False, stride, offset)
+	GL.glVertexAttribPointer(loc, 3, GL.GL_FLOAT, False, stride, offset1)
+
+	loc = GL.glGetAttribLocation(program, "v_texCoord")
+	GL.glEnableVertexAttribArray(loc)
+	GL.glVertexAttribPointer(loc, 2, GL.GL_FLOAT, False, stride, offset2)
+
 	GL.glBindVertexArray(0)
 	return VAO, VBO
 
-
-def draw_2(p):
+def shader_bind(p):
 	VAO,VBO = p
-	#GL.glPointSize(10.0)
 	GL.glBindVertexArray(VAO)
+
+def draw_2():
 	GL.glDrawArrays(GL.GL_TRIANGLES, 0, 6)
 	GL.glBindVertexArray(0)
 

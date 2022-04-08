@@ -29,7 +29,7 @@ class Window:
 		self.fs = False  # start in windowed mode
 		self.going = True
 		self.display_size = display_size
-		pg.display.set_mode(display_size, pg.OPENGL | pg.DOUBLEBUF | pg.RESIZABLE)
+		pg.display.set_mode(display_size, pg.OPENGL | pg.DOUBLEBUF)# | pg.RESIZABLE)
 		GL.glClearColor(0.5, 0.5, 0.5, 1)
 		GL.glClear(GL.GL_COLOR_BUFFER_BIT)
 		pg.display.flip()

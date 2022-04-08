@@ -6,20 +6,29 @@ from events import Events
 from shader import Shader
 
 import OpenGL.GL as GL
-from ogl3 import init_gl_rot, draw_cube, init_gl2, draw_2
+from ogl3 import init_gl_rot, draw_cube, init_gl2, draw_2, shader_bind
 
 from numpy import array, eye, zeros, float32, uint32
 
-from texture import load_im
+from texture import load_texture
 
 def main():
-	display_size = (640, 480)
+	display_size = (600, 600)
 	Window.init(display_size)
 	Events.init()
 	#p = init_gl_rot(display_size)
 	p = init_gl2()
 
+	texture = load_texture("res/block.png")
+	if texture is None:
+		terminate()
+		exit()
+
+
 	GL.glClearColor(0.5, 0.5, 0.5, 1)
+	GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+	GL.glEnable(GL.GL_BLEND)
+
 	while Window.window.going:
 		Events.events.update()
 		if Events.events.j_pressed(pg.K_ESCAPE):
@@ -31,7 +40,11 @@ def main():
 
 		GL.glClear(GL.GL_COLOR_BUFFER_BIT)
 		#draw_cube(p)
-		draw_2(p)
+		shader_bind(p)
+		texture.bind()
+
+
+		draw_2()
 		flip()
 	terminate()
 
