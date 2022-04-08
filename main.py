@@ -34,10 +34,11 @@ def main():
 
 	cam = Camera.init(glm.vec3(0,0,1))
 
-	model = glm.translate(glm.mat4(1.0), glm.vec3(0.5, 0, 0))
+	model = glm.translate(glm.mat4(1.0), glm.vec3(0.0, 0.0, 0.5))
 	model = array(model)
-	print(model)
 
+	projview = cam.get_m_proj_view()
+	print(projview, "\n")
 	while w.going:
 		e.update()
 		if e.j_pressed(pg.K_ESCAPE):
@@ -46,13 +47,20 @@ def main():
 			GL.glClearColor(0.3, 0.3, 0.3, 1)
 		if e.j_clicked(3):
 			GL.glClearColor(0.5, 0.5, 0.5, 1)
+		if e.pressed(pg.K_w):
+			cam.pos.z -= 0.016
+			projview = cam.get_m_proj_view()
+		if e.pressed(pg.K_s):
+			cam.pos.z += 0.016
+			projview = cam.get_m_proj_view()
 
 		GL.glClear(GL.GL_COLOR_BUFFER_BIT)
 
 		#shader.use()
 		shader.uniform_matrix("model", model)
 		#shader.use()
-		#shader.uniform_matrix("projview", cam.get_m_proj_view())
+		
+		shader.uniform_matrix("projview", projview)
 		shader.bind()
 		texture.bind()
 
@@ -63,20 +71,3 @@ def main():
 
 if __name__ == "__main__":
 	main()
-
-'''
-	VAO = GL.glGenVertexArrays(1)
-	VBO = GL.glGenBuffers(1)
-
-	GL.glBindVertexArray(VAO)
-	GL.glBindBuffer(GL.GL_ARRAY_BUFFER, VBO)
-	GL.glBufferData(GL.GL_ARRAY_BUFFER, vertices.nbytes, vertices, GL.GL_STATIC_DRAW)
-
-	stride = vertices.strides[0]
-	offset = ctypes.c_void_p(0)
-
-	GL.glVertexAttribPointer(0, 3, GL.GL_FLOAT, False, 3 * , offset)
-	GL.glEnableVertexAttribArray(0)
-
-	GL.glBindVertexArray(0)
-'''

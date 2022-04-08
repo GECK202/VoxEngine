@@ -37,12 +37,16 @@ class Events:
 			self._frames[Events.MOUSE_BUTTON + button] = self._current
 
 	def key_action(self, key, action):
+		if key>1032:
+			key -= 1073741324
 		if action == pg.KEYDOWN:
 			self._keys[key] = 1
-			self._frames[key] = self._current
+			if self._frames[key] == 0:
+				self._frames[key] = self._current
+				print(key, self._frames[key], self._current)
 		elif action == pg.KEYUP:
 			self._keys[key] = 0
-			self._frames[key] = self._current
+			self._frames[key] = 0
 
 	def __init__(self):
 		self._keys = zeros(1032)
@@ -55,11 +59,6 @@ class Events:
 		self._cursor_locked = False
 		self._cursor_started = False
 
-	def update(self):
-		self._current += 1
-		self.deltaX = 0.0
-		self.deltaY = 0.0
-
 	def pressed(self, keycode):
 		if keycode < 0 or keycode >= Events.MOUSE_BUTTON:
 			return False
@@ -68,7 +67,7 @@ class Events:
 	def j_pressed(self, keycode):
 		if keycode < 0 or keycode >= Events.MOUSE_BUTTON:
 			return False
-		return bool(self._keys[keycode] and self._frames[keycode] == self._current)
+		return bool(bool(self._keys[keycode]) and bool(self._frames[keycode] == self._current))
 
 	def clicked(self, button):
 		index = Events.MOUSE_BUTTON + button
@@ -79,6 +78,9 @@ class Events:
 		return bool(self._keys[index] and self._frames[index] == self._current)
 
 	def update(self):
+		self._current += 1
+		self.deltaX = 0.0
+		self.deltaY = 0.0
 		events = pg.event.get()
 		for event in events:
 			if event.type == pg.KEYDOWN or event.type == pg.KEYUP:
