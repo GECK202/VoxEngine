@@ -12,6 +12,8 @@ pip install numpy
 
 pip install PyOpenGL
 
+pip install PyGLM
+
 pip install --upgrade Pillow
 
 

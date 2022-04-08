@@ -88,7 +88,7 @@ def init_gl2():
 	return VAO, VBO
 
 def shader_bind(p):
-	VAO,VBO = p
+	VAO, _ = p
 	GL.glBindVertexArray(VAO)
 
 def draw_2():

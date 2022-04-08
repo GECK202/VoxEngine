@@ -1,14 +1,6 @@
 import pygame as pg
 import OpenGL.GL as GL
 
-def flip():
-	pg.display.flip()
-	pg.time.wait(10)
-
-
-def terminate():
-	pg.quit()
-
 
 class Window:
 	window = None
@@ -16,7 +8,7 @@ class Window:
 	def init(cls, display_size):
 		if Window.window is None:
 			Window.window = Window(display_size)
-		return 0
+		return Window.window
 
 	def __init__(self, display_size):
 		pg.init()
@@ -29,13 +21,24 @@ class Window:
 		self.fs = False  # start in windowed mode
 		self.going = True
 		self.display_size = display_size
-		pg.display.set_mode(display_size, pg.OPENGL | pg.DOUBLEBUF)# | pg.RESIZABLE)
+		pg.display.set_mode(display_size, pg.OPENGL | pg.DOUBLEBUF | pg.RESIZABLE)
+		
+		GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+		GL.glEnable(GL.GL_BLEND)
+
 		GL.glClearColor(0.5, 0.5, 0.5, 1)
 		GL.glClear(GL.GL_COLOR_BUFFER_BIT)
 		pg.display.flip()
 		GL.glClearColor(0.5, 0.5, 0.5, 1)
 		GL.glClear(GL.GL_COLOR_BUFFER_BIT)
 
+	def flip(self):
+		pg.display.flip()
+		pg.time.wait(10)
+
+
+	def terminate(self):
+		pg.quit()
 
 '''
 	def update(self):

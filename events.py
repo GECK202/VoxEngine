@@ -16,7 +16,7 @@ class Events:
 	def init(cls):
 		if Events.events is None:
 			Events.events = Events()
-		return 0
+		return Events.events
 
 	def cursor_position_action(self, pos):
 		xpos, ypos = pos
