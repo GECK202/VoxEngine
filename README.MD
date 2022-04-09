@@ -16,6 +16,4 @@ pip install PyGLM
 
 pip install --upgrade Pillow
 
-
 python3 main.py #(in windows: python main.py)
- 

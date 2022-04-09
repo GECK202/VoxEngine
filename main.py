@@ -7,10 +7,10 @@ from shader import Shader
 
 import OpenGL.GL as GL
 
-import glm
+from glm import vec3, vec4, mat4, radians, translate
 #from ogl3 import init_gl_rot, draw_cube, init_gl2, draw_2, shader_bind
 
-from numpy import array, eye, zeros, float32, uint32
+from numpy import array, eye, zeros, float32, uint32, transpose
 
 from texture import load_texture
 from shader import Shader
@@ -32,33 +32,73 @@ def main():
 		w.terminate()
 		exit()
 
-	cam = Camera.init(glm.vec3(0,0,1))
+	cam = Camera.init(vec3(0,0,1), radians(70))
 
-	model = glm.translate(glm.mat4(1.0), glm.vec3(0.0, 0.0, 0.5))
-	model = array(model)
-
+	model = translate(mat4(1.0), vec3(0.5, 0, 0))
+	model = transpose(array(model))
+	
 	projview = cam.get_m_proj_view()
 	print(projview, "\n")
+
+	last_time = pg.time.get_ticks()
+	del_time = 0.0
+	speed = 0.001
+	FPS = 60
+	wait_time = int(1000/FPS) 
+
+	camX = 0.0
+	camY = 0.0
+
 	while w.going:
-		e.update()
+		cur_time = pg.time.get_ticks()
+		del_time = cur_time - last_time
+		last_time = cur_time
+
 		if e.j_pressed(pg.K_ESCAPE):
 			w.going = False
+
+		if (e.j_pressed(pg.K_TAB)):
+			e.toogleCursor()
+		
 		if e.j_clicked(1):
 			GL.glClearColor(0.3, 0.3, 0.3, 1)
+
 		if e.j_clicked(3):
 			GL.glClearColor(0.5, 0.5, 0.5, 1)
+
 		if e.pressed(pg.K_w):
-			cam.pos += (cam.front * 0.016)
+			cam.pos += cam.front * del_time * speed
 			projview = cam.get_m_proj_view()
+
 		if e.pressed(pg.K_s):
-			cam.pos -= (cam.front * 0.016)
+			cam.pos -= cam.front * del_time * speed
 			projview = cam.get_m_proj_view()
+
 		if e.pressed(pg.K_a):
-			cam.pos += (cam.right * 0.016)
+			cam.pos -= cam.right * del_time * speed
 			projview = cam.get_m_proj_view()
+			print(projview, "\n")
+
 		if e.pressed(pg.K_d):
-			cam.pos -= (cam.right * 0.016)
+			cam.pos += cam.right * del_time * speed
 			projview = cam.get_m_proj_view()
+			print(projview, "\n")
+
+		if e.resize:
+			e.resize = False
+			w.display_size = e.size
+			projview = cam.get_m_proj_view()
+
+		if e._cursor_locked:
+			camY += -e.deltaY / w.display_size[1] * 2
+			camX += -e.deltaX / w.display_size[1] * 2
+
+			if (camY < -radians(89.0)):
+				camY = -radians(89.0)
+			if (camY > radians(89.0)):
+				camY = radians(89.0)
+			cam.rotation = mat4(1.0)
+			cam.rotate(camY, camX, 0)
 
 		GL.glClear(GL.GL_COLOR_BUFFER_BIT)
 
@@ -72,6 +112,8 @@ def main():
 
 		shader.draw()
 		w.flip()
+		pg.time.wait(wait_time)
+		e.update()
 	w.terminate()
 
 

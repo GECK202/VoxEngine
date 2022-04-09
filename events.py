@@ -7,6 +7,8 @@ from numpy import zeros
 
 from window import Window
 
+from camera import Camera
+
 
 class Events:
 	events = None
@@ -58,6 +60,8 @@ class Events:
 		self.y = 0.0
 		self._cursor_locked = False
 		self._cursor_started = False
+		self.resize = False
+		self.size = Window.window.display_size
 
 	def pressed(self, keycode):
 		if keycode < 0 or keycode >= Events.MOUSE_BUTTON:
@@ -77,6 +81,12 @@ class Events:
 		index = Events.MOUSE_BUTTON + button
 		return bool(self._keys[index] and self._frames[index] == self._current)
 
+	def toogleCursor(self):
+		pg.mouse.set_visible(self._cursor_locked)
+		self._cursor_locked = not self._cursor_locked
+		#Window::setCursorMode(_cursor_locked ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
+
+
 	def update(self):
 		self._current += 1
 		self.deltaX = 0.0
@@ -91,6 +101,9 @@ class Events:
 				self.cursor_position_action(pg.mouse.get_pos())
 			elif event.type == pg.QUIT:
 				self.key_action(pg.KEYDOWN, pg.K_ESCAPE)
+			elif event.type == pg.VIDEORESIZE:
+				self.size = event.size
+				self.resize = True
 
 
 			'''
