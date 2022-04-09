@@ -37,30 +37,31 @@ def main():
 	model = translate(mat4(1.0), vec3(0.5, 0, 0))
 	model = transpose(array(model))
 	
-	projview = cam.get_m_proj_view()
-	print(projview, "\n")
+	#projview = cam.get_m_proj_view()
+	#print(projview, "\n")
 
 	last_time = pg.time.get_ticks()
 	del_time = 0.0
 	speed = 0.001
-	FPS = 60
+	FPS = 30
 	wait_time = int(1000/FPS) 
 
 	camX = 0.0
 	camY = 0.0
-
+	clock = pg.time.Clock()
 	while w.going:
 		cur_time = pg.time.get_ticks()
 		del_time = cur_time - last_time
 		last_time = cur_time
 
-		if e.j_pressed(pg.K_ESCAPE):
+
+		if e.j_pressed(pg.K_ESCAPE) or e.quit:
 			w.going = False
 
 		if (e.j_pressed(pg.K_TAB)):
 			e.toogleCursor()
 		
-		if e.j_clicked(1):
+		if e.clicked(1):
 			GL.glClearColor(0.3, 0.3, 0.3, 1)
 
 		if e.j_clicked(3):
@@ -72,41 +73,30 @@ def main():
 
 		if e.pressed(pg.K_s):
 			cam.pos -= cam.front * del_time * speed
-			projview = cam.get_m_proj_view()
 
 		if e.pressed(pg.K_a):
 			cam.pos -= cam.right * del_time * speed
-			projview = cam.get_m_proj_view()
-			print(projview, "\n")
 
 		if e.pressed(pg.K_d):
 			cam.pos += cam.right * del_time * speed
-			projview = cam.get_m_proj_view()
-			print(projview, "\n")
-
-		if e.resize:
-			e.resize = False
-			w.display_size = e.size
-			projview = cam.get_m_proj_view()
+			
 
 		if e._cursor_locked:
 			camY += -e.deltaY / w.display_size[1] * 2
-			camX += -e.deltaX / w.display_size[1] * 2
-
+			camX += -e.deltaX / w.display_size[0] * 2
 			if (camY < -radians(89.0)):
 				camY = -radians(89.0)
 			if (camY > radians(89.0)):
 				camY = radians(89.0)
 			cam.rotation = mat4(1.0)
 			cam.rotate(camY, camX, 0)
+			projview = cam.get_m_proj_view()
 
 		GL.glClear(GL.GL_COLOR_BUFFER_BIT)
 
-		#shader.use()
 		shader.uniform_matrix("model", model)
-		#shader.use()
 		
-		shader.uniform_matrix("projview", projview)
+		shader.uniform_matrix("projview", cam.get_m_proj_view())
 		shader.bind()
 		texture.bind()
 

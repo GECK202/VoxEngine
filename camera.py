@@ -33,8 +33,8 @@ class Camera:
 
 	def get_projection(self):
 		aspect = Window.window.display_size[0] / Window.window.display_size[1]
-		print(Window.window.display_size)
-		print(aspect)
+		#print(Window.window.display_size)
+		#print(aspect)
 		return perspective(self.fov, aspect, 0.1, 100)
 
 	def get_view(self):

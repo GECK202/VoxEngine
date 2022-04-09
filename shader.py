@@ -66,7 +66,7 @@ def _init_gl(ver_file_name, frag_file_name):
 
 	VBO = GL.glGenBuffers(1)
 	GL.glBindBuffer(GL.GL_ARRAY_BUFFER, VBO)
-	GL.glBufferData(GL.GL_ARRAY_BUFFER, vertices.nbytes, vertices, GL.GL_DYNAMIC_DRAW)
+	GL.glBufferData(GL.GL_ARRAY_BUFFER, vertices.nbytes, vertices, GL.GL_STATIC_DRAW)
 
 	size = int(int(vertices.nbytes / 6) / 5)
 	stride = 5 * size

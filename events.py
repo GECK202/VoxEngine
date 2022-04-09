@@ -22,9 +22,10 @@ class Events:
 
 	def cursor_position_action(self, pos):
 		xpos, ypos = pos
-		if self._cursor_locked:
+		if self._cursor_started:
 			self.deltaX += (xpos - self.x)
 			self.deltaY += (ypos - self.y)
+			self._cursor_started = False
 		else:
 			self._cursor_started = True
 		self.x = xpos
@@ -45,7 +46,6 @@ class Events:
 			self._keys[key] = 1
 			if self._frames[key] == 0:
 				self._frames[key] = self._current
-				print(key, self._frames[key], self._current)
 		elif action == pg.KEYUP:
 			self._keys[key] = 0
 			self._frames[key] = 0
@@ -60,8 +60,7 @@ class Events:
 		self.y = 0.0
 		self._cursor_locked = False
 		self._cursor_started = False
-		self.resize = False
-		self.size = Window.window.display_size
+		self.quit = False
 
 	def pressed(self, keycode):
 		if keycode < 0 or keycode >= Events.MOUSE_BUTTON:
@@ -84,8 +83,6 @@ class Events:
 	def toogleCursor(self):
 		pg.mouse.set_visible(self._cursor_locked)
 		self._cursor_locked = not self._cursor_locked
-		#Window::setCursorMode(_cursor_locked ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
-
 
 	def update(self):
 		self._current += 1
@@ -100,22 +97,6 @@ class Events:
 			elif event.type == pg.MOUSEMOTION:
 				self.cursor_position_action(pg.mouse.get_pos())
 			elif event.type == pg.QUIT:
-				self.key_action(pg.KEYDOWN, pg.K_ESCAPE)
+				self.quit = True
 			elif event.type == pg.VIDEORESIZE:
-				self.size = event.size
-				self.resize = True
-
-
-			'''
-			if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
-				self.going = False
-
-			elif event.type == pg.KEYDOWN and event.key == pg.K_f:
-				if not self.fs:
-					print("Changing to FULLSCREEN")
-					pg.display.set_mode(self.display_size, pg.OPENGL | pg.DOUBLEBUF | pg.FULLSCREEN)
-				else:
-					print("Changing to windowed mode")
-					pg.display.set_mode(self.display_size, pg.OPENGL | pg.DOUBLEBUF)
-				self.fs = not self.fs
-			'''
+				Window.window.display_size = event.size
