@@ -10,7 +10,7 @@ ln -s ~/goinfre/env env
 
 source ./env/bin/activate 
 
-#(in windows: env/bin/activate.bat)
+#(in windows: env\Script\activate.bat)
 
 #=================================
 
