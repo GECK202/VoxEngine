@@ -32,6 +32,8 @@ pip install --upgrade Pillow
 
 #start program
 
-python3 main.py #(in windows: python main.py)
+python3 main.py 
+
+#(in windows: python main.py)
 
 #actions: move - WASD, up - Z, down - Q, rotate - press left mouse button and move mouse
