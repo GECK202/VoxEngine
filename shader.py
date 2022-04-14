@@ -69,15 +69,18 @@ def _init_gl(ver_file_name, frag_file_name):
 	GL.glBufferData(GL.GL_ARRAY_BUFFER, vertices.nbytes, vertices, GL.GL_STATIC_DRAW)
 
 	size = int(int(vertices.nbytes / 6) / 5)
+
+	print("SSIZE=",size)
+
 	stride = 5 * size
 	offset1 = ctypes.c_void_p(0 * size)
 	offset2 = ctypes.c_void_p(3 * size)
 
-	loc = GL.glGetAttribLocation(program, "v_position")
+	loc = 0# GL.glGetAttribLocation(program, "v_position")
 	GL.glEnableVertexAttribArray(loc)
 	GL.glVertexAttribPointer(loc, 3, GL.GL_FLOAT, False, stride, offset1)
 
-	loc = GL.glGetAttribLocation(program, "v_texCoord")
+	loc = 1# GL.glGetAttribLocation(program, "v_texCoord")
 	GL.glEnableVertexAttribArray(loc)
 	GL.glVertexAttribPointer(loc, 2, GL.GL_FLOAT, False, stride, offset2)
 
@@ -88,17 +91,14 @@ def _init_gl(ver_file_name, frag_file_name):
 class Shader:
 
 	def __init__(self, ver_file_name, frag_file_name):
-		self.prog_id, self.VAO, self.VBO = _init_gl(ver_file_name, frag_file_name)
+		self.prog_id = _create_shader(ver_file_name, frag_file_name)
 		self.vertex = 6
 
 	def use(self):
 		GL.glUseProgram(self.prog_id)
 
-	def __del__(self):
-		GL.glDeleteProgram(self.prog_id)
-
-	def bind(self):
-		GL.glBindVertexArray(self.VAO)
+	#def __del__(self):
+	#	GL.glDeleteProgram(self.prog_id)
 
 	def draw(self):
 		GL.glDrawArrays(GL.GL_TRIANGLES, 0, self.vertex)
@@ -107,5 +107,3 @@ class Shader:
 	def uniform_matrix(self, name, matrix):
 		loc = GL.glGetUniformLocation(self.prog_id, name)
 		GL.glUniformMatrix4fv(loc, 1, False, matrix)
-
-

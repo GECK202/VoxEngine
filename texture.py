@@ -25,8 +25,8 @@ class Texture:
 	def bind(self):
 		GL.glBindTexture(GL.GL_TEXTURE_2D, self.id)
 
-	def __del__(self):
-		GL.glDeleteTextures(1, self.id)
+	#def __del__(self):
+	#	GL.glDeleteTextures(1, self.id)
 
 
 def load_texture(filename):

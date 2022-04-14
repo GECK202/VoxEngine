@@ -24,6 +24,10 @@ class Window:
 		pg.display.set_mode(display_size, pg.OPENGL | pg.DOUBLEBUF | pg.RESIZABLE)
 		
 		GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+		#GL.glEnable(GL.GL_BLEND)
+
+		GL.glEnable(GL.GL_DEPTH_TEST)
+		GL.glEnable(GL.GL_CULL_FACE)
 		GL.glEnable(GL.GL_BLEND)
 
 		GL.glClearColor(0.5, 0.5, 0.5, 1)

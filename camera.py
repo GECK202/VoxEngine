@@ -35,7 +35,7 @@ class Camera:
 		aspect = Window.window.display_size[0] / Window.window.display_size[1]
 		#print(Window.window.display_size)
 		#print(aspect)
-		return perspective(self.fov, aspect, 0.1, 100)
+		return perspective(self.fov, aspect, 0.1, 256)
 
 	def get_view(self):
 		return lookAt(self.pos, self.pos + self.front, self.up)
