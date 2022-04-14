@@ -91,14 +91,16 @@ def main():
 		if e.j_pressed(pg.K_ESCAPE) or e.quit:
 			w.going = False
 
-		if (e.j_pressed(pg.K_TAB)):
-			e.toogleCursor()
-		
+		#if (e.j_pressed(pg.K_TAB)):
+		#	e.toogleCursor()
+		e._cursor_locked = False
+		GL.glClearColor(0.5,0.5,0.5,1)
 		if e.clicked(1):
 			GL.glClearColor(0.3, 0.3, 0.3, 1)
+			e._cursor_locked = True
 
-		if e.j_clicked(3):
-			GL.glClearColor(0.5, 0.5, 0.5, 1)
+		#if e.j_clicked(3):
+		#	GL.glClearColor(0.5, 0.5, 0.5, 1)
 
 		if e.pressed(pg.K_w):
 			cam.pos += cam.front * del_time * speed
@@ -126,8 +128,8 @@ def main():
 			#print("Z")	
 
 		if e._cursor_locked:
-			camY += -e.deltaY / w.display_size[1] * 2
-			camX += -e.deltaX / w.display_size[0] * 2
+			camY += -e.deltaY / w.display_size[1] * 4
+			camX += -e.deltaX / w.display_size[0] * 4
 			if (camY < -radians(89.0)):
 				camY = -radians(89.0)
 			if (camY > radians(89.0)):

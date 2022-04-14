@@ -1,5 +1,5 @@
 from numpy import zeros
-from math import sin
+from math import sin, cos
 from glm import vec3, vec4, mat4, radians
 
 
@@ -18,7 +18,7 @@ class Chunk:
 		for y in range(CHUNK_H):
 			for z in range(CHUNK_D):
 				for x in range(CHUNK_W):
-					i_d = int(bool(y <=((sin(radians(x*15)))*128 + (sin(radians(z*15)))*128)))
+					i_d = int(bool(y <=((sin(radians(x*15)))*128 + (cos(radians(z*8)))*128)))
 					if (y <= 0):
 						i_d = 2
 					if (i_d > 2):
