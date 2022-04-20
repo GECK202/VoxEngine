@@ -8,8 +8,8 @@ class Mesh:
 		#print(buffer)
 		self.vertices = int(vertices)
 		vertex_size = int(sum(attrs))
-		print(attrs)
-		print("vsize=",vertex_size,"  v=",self.vertices)
+		#print(attrs)
+		#print("vsize=",vertex_size,"  v=",self.vertices)
 
 		#GL.glUseProgram(1)
 
@@ -27,7 +27,7 @@ class Mesh:
 		for i in range(len(attrs)):
 			size = int(attrs[i])
 			offset = ctypes.c_void_p(int(offs) * 4)
-			print("size=",size," offs=", offs)
+			#print("size=",size," offs=", offs)
 			GL.glVertexAttribPointer(int(i), size, GL.GL_FLOAT, False, vertex_size * 4, offset)
 			GL.glEnableVertexAttribArray(int(i))
 			offs += size

@@ -18,6 +18,7 @@ from camera import Camera
 from voxel_renderer import VoxelRenderer
 from chunk import Chunk
 from mesh import Mesh
+from chunks import Chunks
 
 
 #vertices = array([
@@ -29,21 +30,21 @@ from mesh import Mesh
 #		.5, -.5, 0, 1, 1, 1,
 #		.5, .5, 0, 1, 0, 0.5], dtype=float32)
 
-uv = 0.0625
-v = 0
-u = 2*uv
+#uv = 0.0625
+#v = 0
+#u = 2*uv
 
-vertices = array([
-		-.5, .5, -.5, u, v+uv, 1,
-		.5, .5, .5, u+uv, v+uv, 1,
-		-.5, .5, .5, u, v, 1,
+#vertices = array([
+#		-.5, .5, -.5, u, v+uv, 1,
+#		.5, .5, .5, u+uv, v+uv, 1,
+#		-.5, .5, .5, u, v, 1,
 		
-		-.5, .5, -.5, u, v, 1,
-		.5, .5, .5, u+uv, v+uv, 1,
-		.5, .5, -.5, u+uv, v, 1], dtype=float32)
+#		-.5, .5, -.5, u, v, 1,
+#		.5, .5, .5, u+uv, v+uv, 1,
+#		.5, .5, -.5, u+uv, v, 1], dtype=float32)
 
 def main():
-	display_size = (1200, 800)
+	display_size = (1600, 1200)
 	
 	w = Window.init(display_size)
 	e = Events.init()
@@ -60,15 +61,61 @@ def main():
 		w.terminate()
 		exit()
 
+
 	renderer = VoxelRenderer.init()#1024*1024*8)
-	chunk = Chunk()
+	#chunk = Chunk(0,0,0)
+
 	#mesh = Mesh(vertices, 6, array([3,2,1]))
-	mesh = renderer.render(chunk)
+	#mesh = renderer.render(chunk)
+
+
+	chunks = Chunks.init(5,4,5)
+	#print("chunks after init=",chunks.chunks)
+	meshes = [None] * chunks.volume
+	for i in range(chunks.volume):
+			print("loading=",i, "%")
+			chunk = chunks.chunks[i]
+			#print("KKK=",i,"[",chunk,"]")
+			if chunk.modified == False:
+				continue
+			chunk.modified = False
+			if not (meshes[i] is None):
+				meshes[i] = None
+			mesh = renderer.render(chunk)# (const Chunk**)closes);
+			meshes[i] = mesh
+	#closes[27]
+	#for i in range(chunks.volume):
+		#chunk = chunks.chunks[i]
+		#print("KKK=",i,"[",chunk,"]")
+		#if chunk.modified == False:
+		#	continue
+		#chunk.modified = False
+		#if not (meshes[i] is None):
+		#meshes[i] = None
+		#closes = [None] * 27
+		#for j in range(chunks.volume):
+		#	other = chunks.chunks[j]
+
+		#	ox = other.x - chunk.x
+		#	oy = other.y - chunk.y
+		#	oz = other.z - chunk.z
+
+		#	if (abs(ox) > 1 or abs(oy) > 1 or abs(oz) > 1):
+		#		continue
+
+		#	ox += 1
+		#	oy += 1
+		#	oz += 1
+		#	closes[(oy * 3 + oz) * 3 + ox] = other
+
+		#mesh = renderer.render(chunk)# (const Chunk**)closes);
+		#meshes[i] = mesh
+
 
 	cam = Camera.init(vec3(0,1,1), radians(70))
 
-	model = translate(mat4(1.0), vec3(1, 0, 0))
-	model = transpose(array(model))
+	#model = translate(mat4(1.0), vec3(1, 0, 0))
+	#model = transpose(array(model))
 	
 	#projview = cam.get_m_proj_view()
 	#print(projview, "\n")
@@ -139,16 +186,40 @@ def main():
 			projview = cam.get_m_proj_view()
 			#pg.mouse.set_pos(w.display_size[0]/2, w.display_size[1]/2)
 
+
+		for i in range(chunks.volume):
+			chunk = chunks.chunks[i]
+			#print("KKK=",i,"[",chunk,"]")
+			if chunk.modified == False:
+				continue
+			chunk.modified = False
+			if not (meshes[i] is None):
+				meshes[i] = None
+			mesh = renderer.render(chunk)# (const Chunk**)closes);
+			meshes[i] = mesh
+
 		GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
 
 		shader.use()
 
-		shader.uniform_matrix("model", model)
+		#shader.uniform_matrix("model", model)
 		
 		shader.uniform_matrix("projview", cam.get_m_proj_view())
 		#shader.bind()
 		texture.bind()
-		mesh.draw()#GL.GL_TRIANGLES)
+
+
+		for i in range(chunks.volume):
+			chunk = chunks.chunks[i]
+			mesh = meshes[i]
+			vec = vec3(chunk.x*65+1.0, chunk.y*65+1.0, chunk.z*65+1.0)
+			#print("vec=", vec)
+			model = translate(mat4(1.0), vec)
+			model = transpose(array(model))
+			shader.uniform_matrix("model", model)
+			mesh.draw()#GL_TRIANGLES);
+
+		#mesh.draw()#GL.GL_TRIANGLES)
 		#shader.draw()
 		w.flip()
 		#pg.time.wait(wait_time)

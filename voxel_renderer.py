@@ -114,5 +114,5 @@ class VoxelRenderer:
 						index = self.add_vertex(index, x - 0.5, y - 0.5, z - 0.5, u+uv,v+uv, l)
 						index = self.add_vertex(index, x + 0.5, y + 0.5, z - 0.5, u,v, l)
 						index = self.add_vertex(index, x + 0.5, y - 0.5, z - 0.5, u,v+uv, l)
-		print(self.buffer)
+		#print(self.buffer)
 		return Mesh(self.buffer, index / VERTEX_SIZE, chunk_attrs)
