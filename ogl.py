@@ -124,21 +124,11 @@ def init_gl(display_size):
 
 	shader_data["buffer"]["filled"] = GL.glGenBuffers(1)
 	GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, shader_data["buffer"]["filled"])
-	GL.glBufferData(
-		GL.GL_ELEMENT_ARRAY_BUFFER,
-		filled_cube_indices.nbytes,
-		filled_cube_indices,
-		GL.GL_STATIC_DRAW,
-	)
+	GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER,filled_cube_indices.nbytes,filled_cube_indices,GL.GL_STATIC_DRAW)
 
 	shader_data["buffer"]["outline"] = GL.glGenBuffers(1)
 	GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, shader_data["buffer"]["outline"])
-	GL.glBufferData(
-		GL.GL_ELEMENT_ARRAY_BUFFER,
-		outline_cube_indices.nbytes,
-		outline_cube_indices,
-		GL.GL_STATIC_DRAW,
-	)
+	GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER,outline_cube_indices.nbytes,outline_cube_indices,GL.GL_STATIC_DRAW,)
 
 	shader_data["constants"]["model"] = GL.glGetUniformLocation(program, "model")
 	GL.glUniformMatrix4fv(shader_data["constants"]["model"], 1, False, eye(4))
@@ -161,9 +151,7 @@ def init_gl(display_size):
 
 	# This colour is added on to the base vertex colour in producing
 	# the final output
-	shader_data["constants"]["colour_add"] = GL.glGetUniformLocation(
-		program, "colour_add"
-	)
+	shader_data["constants"]["colour_add"] = GL.glGetUniformLocation(program, "colour_add")
 	GL.glUniform4f(shader_data["constants"]["colour_add"], 0, 0, 0, 0)
 
 	# Set GL drawing data

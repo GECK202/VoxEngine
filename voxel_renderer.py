@@ -2,7 +2,7 @@ from numpy import array, zeros, float32, uint32, append
 from mesh import Mesh
 
 VERTEX_SIZE = 3 + 2 + 1
-CHUNK_W, CHUNK_H, CHUNK_D = 64,256,64#16, 16, 16
+CHUNK_W, CHUNK_H, CHUNK_D = 64,64,64#16, 16, 16
 CHUNK_VOL = CHUNK_W*CHUNK_H*CHUNK_D
 
 chunk_attrs = array([3,2,1])
