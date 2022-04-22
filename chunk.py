@@ -20,26 +20,31 @@ class Chunk:
 		self.y = iy
 		self.z = iz
 		self.modified = True
-		self.voxels = zeros(CHUNK_VOL, dtype=Voxel)
+		self.voxels = zeros(CHUNK_VOL, dtype=object)
+		index = 0
 		for y in range(CHUNK_H):
+			ry = y + self.y * CHUNK_H
+			ry5 = (ry%5 == 0)
 			for z in range(CHUNK_D):
+				rz = z + self.z * CHUNK_D
+				cos_z=cos(radians(rz*8))*192
+				rz5 = (rz%5 == 0)
 				for x in range(CHUNK_W):
 	
-					rx = x + self.x * CHUNK_W
-					ry = y + self.y * CHUNK_H
-					rz = z + self.z * CHUNK_D
-				
-					i_d = int(bool(ry <=((sin(radians(rx*15)))*192 + (cos(radians(rz*8)))*192)))
-						
+					
+					
 					if (ry <= 0):
 						i_d = 2
-					if (i_d > 2):
-						i_d = 0
-					if (i_d == 1 and ry%5 == 0):
-						i_d = 2
-					if (i_d == 1 and rz%5 == 0):
-						i_d = 2
-					elif(i_d == 2 and rz%5 == 0):
-						i_d = 1 
-					index = (y * CHUNK_D + z) * CHUNK_W + x 
+					else:
+						rx = x + self.x * CHUNK_W
+						i_d = int((ry <=((sin(radians(rx*15)))*192 + cos_z)))
+						if (i_d > 2):
+							i_d = 0
+						
+					
+					
+					if (ry5 or rz5) and (i_d > 0):
+						i_d = i_d%2 + 1
+					#index = (y * CHUNK_D + z) * CHUNK_W + x 
 					self.voxels[index] = Voxel(i_d)
+					index += 1

@@ -11,6 +11,7 @@ from glm import vec3, vec4, mat4, radians, translate
 #from ogl3 import init_gl_rot, draw_cube, init_gl2, draw_2, shader_bind
 
 from numpy import array, eye, zeros, float32, uint32, transpose
+import time
 
 from texture import load_texture
 from shader import Shader, _init_gl
@@ -71,18 +72,8 @@ def main():
 
 	chunks = Chunks.init(5,4,5)
 	#print("chunks after init=",chunks.chunks)
-	meshes = [None] * chunks.volume
-	for i in range(chunks.volume):
-			print("loading=",i, "%")
-			chunk = chunks.chunks[i]
-			#print("KKK=",i,"[",chunk,"]")
-			if chunk.modified == False:
-				continue
-			chunk.modified = False
-			if not (meshes[i] is None):
-				meshes[i] = None
-			mesh = renderer.render(chunk)# (const Chunk**)closes);
-			meshes[i] = mesh
+	meshes = zeros(chunks.volume, dtype=object)
+
 	#closes[27]
 	#for i in range(chunks.volume):
 		#chunk = chunks.chunks[i]
@@ -189,14 +180,14 @@ def main():
 
 		for i in range(chunks.volume):
 			chunk = chunks.chunks[i]
-			#print("KKK=",i,"[",chunk,"]")
 			if chunk.modified == False:
 				continue
 			chunk.modified = False
 			if not (meshes[i] is None):
 				meshes[i] = None
-			mesh = renderer.render(chunk)# (const Chunk**)closes);
+			mesh = renderer.render(chunk)
 			meshes[i] = mesh
+			print("load block ",i,"%")
 
 		GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
 
@@ -210,6 +201,7 @@ def main():
 
 
 		for i in range(chunks.volume):
+			
 			chunk = chunks.chunks[i]
 			mesh = meshes[i]
 			vec = vec3(chunk.x*65+1.0, chunk.y*65+1.0, chunk.z*65+1.0)

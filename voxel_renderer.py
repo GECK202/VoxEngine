@@ -38,17 +38,31 @@ class VoxelRenderer:
 		self.buffer[index+4]=v
 		self.buffer[index+5]=l
 		#print(self.buffer)
-		return index + 6
+		return
 
 	def render(self, chunk):
 		index = 0
+		v_ind = -1
 		for y in range(CHUNK_H):
 			#print(y)
+			y1_ind=(y+1)*CHUNK_D
+			ym_ind=(y-1)*CHUNK_D
+			in_y = (y>=0 and y<CHUNK_H)
+			in_y1 = ((y+1)>=0 and (y+1)<CHUNK_H)
+			in_ym = ((y-1)>=0 and (y-1)<CHUNK_H)
 			for z in range(CHUNK_D):
 				#print(z)
+				z11_ind=(y1_ind+z+1)*CHUNK_W
+				z1m_ind=(y1_ind+z-1)*CHUNK_W
+				zm1_ind=(ym_ind+z+1)*CHUNK_W
+				zmm_ind=(ym_ind+z-1)*CHUNK_W
+				in_z1 = ((z+1)>=0 and (z+1)<CHUNK_D)
+				in_zm = ((z-1)>=0 and (z-1)<CHUNK_D)
 				for x in range(CHUNK_W):
-					#print(x)
-					vox = chunk.voxels[voxel_index(x, y, z)]
+					v_ind = v_ind + 1
+
+					vox = chunk.voxels[v_ind]
+					#print(z_ind + x)
 					if not(vox.is_solid):
 						continue
 					i_d = vox.id
@@ -58,13 +72,14 @@ class VoxelRenderer:
 					u = i_d * uv #1-((1 + int(id / 16)) * uv)
 					if not(is_blocked(x,y+1,z,chunk)):
 						l = 1.0
-						index = self.add_vertex(index, x - 0.5, y + 0.5, z - 0.5, u,v, l)
-						index = self.add_vertex(index, x - 0.5, y + 0.5, z + 0.5, u,v+uv, l)
-						index = self.add_vertex(index, x + 0.5, y + 0.5, z + 0.5, u+uv,v+uv, l)
+						self.add_vertex(index, x - 0.5, y + 0.5, z - 0.5, u,v, l)
+						self.add_vertex(index, x - 0.5, y + 0.5, z + 0.5, u,v+uv, l)
+						self.add_vertex(index, x + 0.5, y + 0.5, z + 0.5, u+uv,v+uv, l)
 
-						index = self.add_vertex(index, x - 0.5, y + 0.5, z - 0.5, u,v, l)
-						index = self.add_vertex(index, x + 0.5, y + 0.5, z + 0.5, u+uv,v+uv, l)
-						index = self.add_vertex(index, x + 0.5, y + 0.5, z - 0.5, u+uv,v, l)
+						self.add_vertex(index, x - 0.5, y + 0.5, z - 0.5, u,v, l)
+						self.add_vertex(index, x + 0.5, y + 0.5, z + 0.5, u+uv,v+uv, l)
+						self.add_vertex(index, x + 0.5, y + 0.5, z - 0.5, u+uv,v, l)
+						index = index + 6
 					if not(is_blocked(x,y-1,z,chunk)):
 						l = 0.75
 						index = self.add_vertex(index, x - 0.5, y - 0.5, z - 0.5, u,v, l)

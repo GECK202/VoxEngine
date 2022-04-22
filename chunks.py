@@ -16,7 +16,7 @@ class Chunks:
 		self.d = d
 		self.h = h
 		self.volume = w*d*h
-		self.chunks = zeros(100, dtype=Chunk)
+		self.chunks = zeros(100, dtype=object)
 		print(self.chunks)
 		index = 0
 		for y in range(h):
