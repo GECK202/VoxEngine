@@ -45,7 +45,7 @@ from chunks import Chunks
 #		.5, .5, -.5, u+uv, v, 1], dtype=float32)
 
 def main():
-	display_size = (1600, 1200)
+	display_size = (800, 600)
 	
 	w = Window.init(display_size)
 	e = Events.init()
@@ -70,7 +70,7 @@ def main():
 	#mesh = renderer.render(chunk)
 
 
-	chunks = Chunks.init(5,4,5)
+	chunks = Chunks.init(2,3,2)
 	#print("chunks after init=",chunks.chunks)
 	meshes = zeros(chunks.volume, dtype=object)
 
@@ -103,7 +103,7 @@ def main():
 		#meshes[i] = mesh
 
 
-	cam = Camera.init(vec3(0,1,1), radians(70))
+	cam = Camera.init(vec3(64,100,64), radians(70))
 
 	#model = translate(mat4(1.0), vec3(1, 0, 0))
 	#model = transpose(array(model))
@@ -118,7 +118,11 @@ def main():
 	#wait_time = int(1000/FPS) 
 
 	camX = 0.0
-	camY = 0.0
+	camY = 0.0#radians(89.0)
+	#cam.rotation = mat4(1.0)
+	#cam.rotate(0, camY, 0)
+	#projview = cam.get_m_proj_view()
+
 	clock = pg.time.Clock()
 	#w.going = False
 	while w.going:
@@ -187,7 +191,7 @@ def main():
 				meshes[i] = None
 			mesh = renderer.render(chunk)
 			meshes[i] = mesh
-			print("load block ",i,"%")
+			print("load mesh ",int(i*100/12),"%")
 
 		GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
 
@@ -204,7 +208,7 @@ def main():
 			
 			chunk = chunks.chunks[i]
 			mesh = meshes[i]
-			vec = vec3(chunk.x*65+1.0, chunk.y*65+1.0, chunk.z*65+1.0)
+			vec = vec3(chunk.x+1.0, chunk.y+1.0, chunk.z+1.0)
 			#print("vec=", vec)
 			model = translate(mat4(1.0), vec)
 			model = transpose(array(model))

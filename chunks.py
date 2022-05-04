@@ -17,15 +17,15 @@ class Chunks:
 		self.h = h
 		self.volume = w*d*h
 		self.chunks = zeros(100, dtype=object)
-		print(self.chunks)
+		#print(self.chunks)
 		index = 0
 		for y in range(h):
 			for z in range(d):
 				for x in range(w):
 					chunk = Chunk(x,y,z)
-					print("create blocks", int(index * 100 / self.volume), "%")
+					print("create chunks", int(index * 100 / self.volume), "%")
 					self.chunks[index] = chunk
 
 					index += 1
 
-		print(self.chunks)
+		#print(self.chunks)
