@@ -103,7 +103,7 @@ def main():
 		#meshes[i] = mesh
 
 
-	cam = Camera.init(vec3(0,1,1), radians(70))
+	cam = Camera.init(vec3(64,3,64), radians(70))
 
 	#model = translate(mat4(1.0), vec3(1, 0, 0))
 	#model = transpose(array(model))
