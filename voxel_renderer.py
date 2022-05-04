@@ -38,7 +38,8 @@ class VoxelRenderer:
 		self.buffer[index+4]=v
 		self.buffer[index+5]=l
 		#print(self.buffer)
-		return
+
+		return index + 6
 
 	def render(self, chunk):
 		index = 0
@@ -72,14 +73,13 @@ class VoxelRenderer:
 					u = i_d * uv #1-((1 + int(id / 16)) * uv)
 					if not(is_blocked(x,y+1,z,chunk)):
 						l = 1.0
-						self.add_vertex(index, x - 0.5, y + 0.5, z - 0.5, u,v, l)
-						self.add_vertex(index, x - 0.5, y + 0.5, z + 0.5, u,v+uv, l)
-						self.add_vertex(index, x + 0.5, y + 0.5, z + 0.5, u+uv,v+uv, l)
+						index = self.add_vertex(index, x - 0.5, y + 0.5, z - 0.5, u,v, l)
+						index = self.add_vertex(index, x - 0.5, y + 0.5, z + 0.5, u,v+uv, l)
+						index = self.add_vertex(index, x + 0.5, y + 0.5, z + 0.5, u+uv,v+uv, l)
 
-						self.add_vertex(index, x - 0.5, y + 0.5, z - 0.5, u,v, l)
-						self.add_vertex(index, x + 0.5, y + 0.5, z + 0.5, u+uv,v+uv, l)
-						self.add_vertex(index, x + 0.5, y + 0.5, z - 0.5, u+uv,v, l)
-						index = index + 6
+						index = self.add_vertex(index, x - 0.5, y + 0.5, z - 0.5, u,v, l)
+						index = self.add_vertex(index, x + 0.5, y + 0.5, z + 0.5, u+uv,v+uv, l)
+						index = self.add_vertex(index, x + 0.5, y + 0.5, z - 0.5, u+uv,v, l)
 					if not(is_blocked(x,y-1,z,chunk)):
 						l = 0.75
 						index = self.add_vertex(index, x - 0.5, y - 0.5, z - 0.5, u,v, l)

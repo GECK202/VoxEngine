@@ -45,7 +45,7 @@ from chunks import Chunks
 #		.5, .5, -.5, u+uv, v, 1], dtype=float32)
 
 def main():
-	display_size = (1600, 1200)
+	display_size = (800, 600)
 	
 	w = Window.init(display_size)
 	e = Events.init()
@@ -70,7 +70,7 @@ def main():
 	#mesh = renderer.render(chunk)
 
 
-	chunks = Chunks.init(5,4,5)
+	chunks = Chunks.init(2,2,2)
 	#print("chunks after init=",chunks.chunks)
 	meshes = zeros(chunks.volume, dtype=object)
 
