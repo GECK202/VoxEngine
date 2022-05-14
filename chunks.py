@@ -21,7 +21,5 @@ class Chunks:
 		for y in range(h):
 			for z in range(d):
 				for x in range(w):
-					chunk = Chunk(x, y, z)
-					#print("create chunks", int(index * 100 / self.volume), "%")
-					self.chunks[index] = chunk
+					self.chunks[index] = Chunk(x, y, z)
 					index += 1

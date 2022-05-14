@@ -14,8 +14,9 @@ from shader import Shader
 from camera import Camera
 from voxel_renderer import VoxelRenderer, render
 from chunks import Chunks
+from hmap import Hmap 
 
-CHUNK_W, CHUNK_H, CHUNK_D = 16, 16, 16
+CHUNK_W, CHUNK_H, CHUNK_D = 32,32,32
 MAP_W, MAP_H, MAP_D = 8, 12, 8
 
 CHUNK_W2, CHUNK_D2 = CHUNK_W / 2, CHUNK_D / 2
@@ -39,7 +40,13 @@ def main():
 		w.terminate()
 		exit()
 
-	renderer = VoxelRenderer
+	#renderer = 
+	VoxelRenderer.init()
+
+
+	print("Start load map...")
+	Hmap.init(10,8,10)
+	print("End load map. OK.")
 
 	print("Start create chunks...")
 	chunks = Chunks.init(MAP_W, MAP_H, MAP_D)
@@ -102,12 +109,10 @@ def main():
 				camY = radians(89.0)
 			cam.rotation = mat4(1.0)
 			cam.rotate(camY, camX, 0)
-			#projview = cam.get_m_proj_view()
 
 		n = 0
 		for i in range(chunks.volume):
 			chunk = chunks.chunks[i]
-			#print("chunk",chunk.index,"pos=[",chunk.x,chunk.y,chunk.z,"] modif=",chunk.modified)
 			if pos_change:
 				mx = cam.pos[0] + CV_W
 				mz = cam.pos[2] + CV_D
@@ -116,6 +121,7 @@ def main():
 					chunk.modified = True
 			if not chunk.modified:
 				continue
+			print("-load mesh", int(chunk.x/CHUNK_W), int(chunk.y/CHUNK_H), int(chunk.z/CHUNK_D))
 			n += 1
 			chunk.modified = False
 			chunk.full_up()
@@ -124,7 +130,6 @@ def main():
 				meshes[i] = None
 			mesh = render(chunk)
 			meshes[i] = mesh
-			#print("load mesh ", int(i*100/12), "%")
 		if n > 0:
 			print("Was modify", n, "chunks!")
 		GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
@@ -141,7 +146,7 @@ def main():
 			model = transpose(array(model))
 			shader.uniform_matrix("model", model)
 			mesh.draw()
-
+		print("cycle")
 		w.flip()
 		e.update()
 	w.terminate()

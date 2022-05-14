@@ -13,7 +13,7 @@ class Tile:
 	def __init__(self):
 		print("Start generate tile, please wait...")
 		try:
-			self.newData = load("res/tilearr.npy")
+			self.newData = load("env/tilearr.npy")
 		except:
 			im = Image.open("res/perlin_noise.png")
 			data = array(im.getdata())
@@ -29,7 +29,7 @@ class Tile:
 				#	self.newData[x][y][z]=2
 					for y in range(dot):
 						self.newData[x][y][z]=1
-			save("res/tilearr.npy", self.newData)
+			save("env/tilearr.npy", self.newData)
 		print("End generate tile. It is OK.")
 
 	def _get_id(self, x,y,z,d):

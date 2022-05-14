@@ -1,9 +1,9 @@
 from numpy import array, zeros, float32, save, load
 from mesh import Mesh
-from map import Map
+import hmap
 
 VERTEX_SIZE = 3 + 2 + 1
-CHUNK_W, CHUNK_H, CHUNK_D = 16, 16, 16
+CHUNK_W, CHUNK_H, CHUNK_D = 32,32,32
 CHUNK_VOL = CHUNK_W * CHUNK_H * CHUNK_D
 
 chunk_attrs = array([3, 2, 1])
@@ -22,7 +22,7 @@ chunk_attrs = array([3, 2, 1])
 
 
 def render(chunk):
-	buff =
+	buff = hmap.Hmap.h_map.load_buf(chunk)
 	index = buff.size
 	return Mesh(buff, index * 6, chunk_attrs)
 
@@ -63,7 +63,6 @@ class VoxelRenderer:
 			y0_ind = y * CHUNK_D
 			y05 = y + 0.5
 			ym5 = y - 0.5
-
 			for z in range(CHUNK_D):
 				z00_ind = (y0_ind + z) * CHUNK_W
 				z05 = z + 0.5
@@ -81,48 +80,48 @@ class VoxelRenderer:
 					s = chunk.voxels[z00_ind + x].emp
 					if (s & 0b100000) >> 5:
 						lt = 1.0
-						self.buff[index] = array([
+						self.buffer[index] = array([
 							[xm5, y05, zm5, u0, v0, lt], [xm5, y05, z05, u0, v1, lt], [x05, y05, z05, u1, v1, lt],
 							[xm5, y05, zm5, u0, v0, lt], [x05, y05, z05, u1, v1, lt], [x05, y05, zm5, u1, v0, lt]],
 							dtype=float32)
 						index = index + 1
 					if (s & 0b1000000) >> 6:
 						lt = 0.65
-						self.buff[index] = array([
+						self.buffer[index] = array([
 							[xm5, ym5, zm5, u0, v0, lt], [x05, ym5, z05, u1, v1, lt], [xm5, ym5, z05, u0, v1, lt],
 							[xm5, ym5, zm5, u0, v0, lt], [x05, ym5, zm5, u1, v0, lt], [x05, ym5, z05, u1, v1, lt]],
 							dtype=float32)
 						index = index + 1
 					if (s & 0b100) >> 2:
 						lt = 0.85
-						self.buff[index] = array([
+						self.buffer[index] = array([
 							[x05, ym5, zm5, u1, v1, lt], [x05, y05, zm5, u1, v0, lt], [x05, y05, z05, u0, v0, lt],
 							[x05, ym5, zm5, u1, v1, lt], [x05, y05, z05, u0, v0, lt], [x05, ym5, z05, u0, v1, lt]],
 							dtype=float32)
 						index = index + 1
 					if (s & 0b10) >> 1:
 						lt = 0.75
-						self.buff[index] = array([
+						self.buffer[index] = array([
 							[xm5, ym5, zm5, u0, v1, lt], [xm5, y05, z05, u1, v0, lt], [xm5, y05, zm5, u0, v0, lt],
 							[xm5, ym5, zm5, u0, v1, lt], [xm5, ym5, z05, u1, v1, lt], [xm5, y05, z05, u1, v0, lt]],
 							dtype=float32)
 						index = index + 1
 					if (s & 0b1000) >> 3:
 						lt = 0.9
-						self.buff[index] = array([
+						self.buffer[index] = array([
 							[xm5, ym5, z05, u0, v1, lt], [x05, y05, z05, u1, v0, lt], [xm5, y05, z05, u0, v0, lt],
 							[xm5, ym5, z05, u0, v1, lt], [x05, ym5, z05, u1, v1, lt], [x05, y05, z05, u1, v0, lt]],
 							dtype=float32)
 						index = index + 1
 					if (s & 10000) >> 4:
 						lt = 0.8
-						self.buff[index] = array([
+						self.buffer[index] = array([
 							[xm5, ym5, zm5, u1, v1, lt], [xm5, y05, zm5, u1, v0, lt], [x05, y05, zm5, u0, v0, lt],
 							[xm5, ym5, zm5, u1, v1, lt], [x05, y05, zm5, u0, v0, lt], [x05, ym5, zm5, u0, v1, lt]],
 							dtype=float32)
 						index = index + 1
 		#b = self.buff[:index]
-		return self.buff[:index]
+		return self.buffer[:index]
 		#hb = hash(b.data.tobytes())
 		#Map.map[chunk.x % CHUNK_W][chunk.y % CHUNK_H][chunk.z % CHUNK_D] = hb
 		#shb = str(hb).replace("-", "_") + ".npy"
