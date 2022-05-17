@@ -30,6 +30,12 @@ pip install --upgrade Pillow
 
 #=================================
 
+#reset PYTHONHASHSEED
+
+export PYTHONHASHSEED=0
+
+#=================================
+
 #start program
 
 python3 main.py 
