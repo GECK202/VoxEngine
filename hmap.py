@@ -8,7 +8,6 @@ def get_name(hb):
 
 class Hmap:
 	h_map = None
-
 	@classmethod
 	def init(cls, w, h, d):
 		if Hmap.h_map is None:
@@ -42,8 +41,9 @@ class Hmap:
 		chunk.full_up()
 		buf = vr.VoxelRenderer.renderer.create_buf(chunk).reshape(-1)
 		hb = hash(buf.data.tobytes())
-		shb = get_name(hb)
-		save(shb, buf)
+		if hb != 0:
+			shb = get_name(hb)
+			save(shb, buf)
 		self.data[x][y][z] = hb
 
 	def load_buf(self, chunk):
@@ -51,6 +51,8 @@ class Hmap:
 		y = int(chunk.y / CHUNK_H)%self.h
 		z = int(chunk.z / CHUNK_D)%self.d
 		hb = self.data[x][y][z]
+		if hb == 0:
+			return array([])
 		shb = get_name(hb)
 		try:
 			buf = load(shb).reshape(-1, 6, 6)

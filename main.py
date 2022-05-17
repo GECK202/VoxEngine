@@ -15,6 +15,9 @@ from camera import Camera
 from voxel_renderer import VoxelRenderer, render
 from chunks import Chunks
 from hmap import Hmap 
+import time
+
+
 
 CHUNK_W, CHUNK_H, CHUNK_D = 32,32,32
 MAP_W, MAP_H, MAP_D = 5, 8, 5
@@ -25,7 +28,7 @@ CV_W = ((MAP_W - 1) * CHUNK_W - MAP_W) // 2
 CV_D = ((MAP_D - 1) * CHUNK_D - MAP_D) // 2
 
 def main():
-	display_size = (800, 600)
+	display_size = (1280, 1024)
 
 	w = Window.init(display_size)
 	e = Events.init()
@@ -110,6 +113,7 @@ def main():
 			cam.rotation = mat4(1.0)
 			cam.rotate(camY, camX, 0)
 
+		start_time = time.time()
 		n = 0
 		for i in range(chunks.volume):
 			chunk = chunks.chunks[i]
@@ -131,7 +135,9 @@ def main():
 			mesh = render(chunk)
 			meshes[i] = mesh
 		if n > 0:
-			print("Was modify", n, "chunks!")
+			delta = (time.time() - start_time)
+			ps = delta / n
+			print("Was modify", n, "chunks! - ", delta, " seconds, ", ps, "sec per chunk")
 		GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
 
 		shader.use()
