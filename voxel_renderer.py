@@ -23,8 +23,10 @@ chunk_attrs = array([3, 2, 1])
 
 def render(chunk):
 	buff = hmap.Hmap.h_map.load_buf(chunk)
-	index = buff.size
-	return Mesh(buff, index * 6, chunk_attrs)
+	
+	index = int(buff.size / 6)
+	#print(index)
+	return Mesh(buff, index, chunk_attrs)
 
 
 class VoxelRenderer:
@@ -78,6 +80,7 @@ class VoxelRenderer:
 					v1 = v0 + uv
 					u1 = u0 + uv
 					s = chunk.voxels[z00_ind + x].emp
+					#print(x,y,z,s)
 					if (s & 0b100000) >> 5:
 						lt = 1.0
 						self.buffer[index] = array([
@@ -121,6 +124,7 @@ class VoxelRenderer:
 							dtype=float32)
 						index = index + 1
 		#b = self.buff[:index]
+		#	print("MESH INDEX=",index)
 		return self.buffer[:index]
 		#hb = hash(b.data.tobytes())
 		#Map.map[chunk.x % CHUNK_W][chunk.y % CHUNK_H][chunk.z % CHUNK_D] = hb

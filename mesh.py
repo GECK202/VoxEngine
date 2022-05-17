@@ -20,7 +20,8 @@ class Mesh:
 		GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.vbo)
 
 		GL.glBufferData(GL.GL_ARRAY_BUFFER, 4*vertex_size*self.vertices, buffer, GL.GL_STATIC_DRAW)
-
+		#print(buffer)
+		#print(self.vertices)
 		# attributes
 		offs = 0
 		size = 0

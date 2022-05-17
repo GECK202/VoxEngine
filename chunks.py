@@ -11,7 +11,7 @@ class Chunks:
 			Chunks.chunks = Chunks(w, d, h)
 		return Chunks.chunks
 
-	def __init__(self, w, d, h):
+	def __init__(self, w, h, d):
 		self.w = w
 		self.d = d
 		self.h = h
@@ -22,4 +22,5 @@ class Chunks:
 			for z in range(d):
 				for x in range(w):
 					self.chunks[index] = Chunk(x, y, z)
+					#print("create chunk ", x, y, z)
 					index += 1

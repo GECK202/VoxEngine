@@ -15,6 +15,8 @@ class Chunk:
 	def full_up(self):
 		index = 0
 		tile = Tile.init()
+		st = set()
+		#print("TILE=",tile.newData)
 		for y in range(CHUNK_H):
 			ry = (self.y + y) % 256
 			for z in range(CHUNK_D):
@@ -25,8 +27,10 @@ class Chunk:
 					if (i_d == 1) and ((ry % 5) and (rx % 7) and (rz % 11)) == 0:
 						i_d = 2
 					emp = tile.getID(rx, ry, rz)
+					st.add(emp)
 					self.voxels[index] = Voxel(i_d, emp)
 					index += 1
+		#print(st)
 
 	def __init__(self, ix, iy, iz):
 		iy *= CHUNK_H

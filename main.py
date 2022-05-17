@@ -17,7 +17,7 @@ from chunks import Chunks
 from hmap import Hmap 
 
 CHUNK_W, CHUNK_H, CHUNK_D = 32,32,32
-MAP_W, MAP_H, MAP_D = 8, 12, 8
+MAP_W, MAP_H, MAP_D = 5, 8, 5
 
 CHUNK_W2, CHUNK_D2 = CHUNK_W / 2, CHUNK_D / 2
 
@@ -45,7 +45,7 @@ def main():
 
 
 	print("Start load map...")
-	Hmap.init(10,8,10)
+	Hmap.init(MAP_W, MAP_H, MAP_D)
 	print("End load map. OK.")
 
 	print("Start create chunks...")
@@ -53,7 +53,7 @@ def main():
 	print("End create chunks. Ok.")
 	meshes = zeros(chunks.volume, dtype=object)
 
-	cam = Camera.init(vec3(CHUNK_W * MAP_W / 2, MAP_H * CHUNK_H, CHUNK_D * MAP_D / 2), radians(70))
+	cam = Camera.init(vec3(CHUNK_W * MAP_W / 2, MAP_H * CHUNK_H/2, CHUNK_D * MAP_D / 2), radians(70))
 
 	last_time = pg.time.get_ticks()
 	speed = 0.02
@@ -113,15 +113,15 @@ def main():
 		n = 0
 		for i in range(chunks.volume):
 			chunk = chunks.chunks[i]
-			if pos_change:
-				mx = cam.pos[0] + CV_W
-				mz = cam.pos[2] + CV_D
-				if chunk.x < mx:
-					chunk.x += MAP_W * CHUNK_W
-					chunk.modified = True
+			#if pos_change:
+			#	mx = cam.pos[0] + CV_W
+			#	mz = cam.pos[2] + CV_D
+			#	if chunk.x < mx:
+			#		chunk.x += MAP_W * CHUNK_W
+			#		chunk.modified = True
 			if not chunk.modified:
 				continue
-			print("-load mesh", int(chunk.x/CHUNK_W), int(chunk.y/CHUNK_H), int(chunk.z/CHUNK_D))
+			
 			n += 1
 			chunk.modified = False
 			chunk.full_up()
@@ -146,7 +146,7 @@ def main():
 			model = transpose(array(model))
 			shader.uniform_matrix("model", model)
 			mesh.draw()
-		print("cycle")
+		#print("cycle")
 		w.flip()
 		e.update()
 	w.terminate()
