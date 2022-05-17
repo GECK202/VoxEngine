@@ -30,7 +30,7 @@ pip install --upgrade Pillow
 
 #=================================
 
-#reset PYTHONHASHSEED
+#reset PYTHON HASH SEED
 
 export PYTHONHASHSEED=0
 
