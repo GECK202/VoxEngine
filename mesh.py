@@ -1,8 +1,31 @@
 import ctypes
 import OpenGL.GL as GL
+from types import Dict
+from numpy import uint8, uint32, array, zeros
+from hashlib import sha1
+
 
 
 class Mesh:
+	
+	mesh_dict:Dict[str, Mesh] = {}
+
+	@classmethod
+	def init(cls):
+		buffer = zeros(0, dtype=float32)
+		mesh = Mesh(buffer, 0, 6)
+		hash_name = sha1(buffer.data.tobytes()).hexdigest()
+		cls.mesh_dict[hash_name] = mesh
+
+
+	@classmethod
+	def add_mesh(cls, buffer: array, size: uint32) -> Mesh:
+		hash_name = sha1(buffer.data.tobytes()).hexdigest()
+		mesh: Mesh = cls.mesh_dict.get(hash_name)
+		if mesh is None:
+			mesh = Mesh(buffer, size, 6)
+			cls.mesh_dict[hash_name] = mesh
+		return mesh
 
 	def __init__(self, buffer, vertices, attrs):
 		#print(buffer)

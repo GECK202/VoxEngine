@@ -16,7 +16,7 @@ class Chunks:
 		self.d = d
 		self.h = h
 		self.volume = w * d * h
-		self.chunks = zeros(768, dtype=object)
+		self.chunks = zeros(self.volume, dtype=object)
 		index = 0
 		for y in range(h):
 			for z in range(d):
