@@ -1,9 +1,11 @@
 from numpy import zeros, array, load, save
 from chunk import Chunk, CHUNK_W, CHUNK_H, CHUNK_D
 import voxel_renderer as vr
+import hashlib
+
 
 def get_name(hb):
-	return "env/cash/" + str(hb).replace("-", "_") + ".npy"
+	return f"env/cash/{hb}.npy"
 
 class Hmap:
 	h_map = None
@@ -20,7 +22,7 @@ class Hmap:
 		try:
 			self.data = load("env/maparr.npy")
 		except:
-			self.data = zeros(w * h * d, dtype=int).reshape(w, h, d)
+			self.data = zeros(w * h * d, dtype=object).reshape(w, h, d)
 			for x in range(w):
 				for y in range(h):
 					print("save map[",x,y,"]")
@@ -34,7 +36,11 @@ class Hmap:
 		chunk = Chunk(x, y, z)
 		chunk.full_up()
 		buf = vr.VoxelRenderer.renderer.create_buf(chunk)
-		hb = hash(buf.data.tobytes())
+		#hb = hash(buf.data.tobytes())
+
+		hb = hashlib.sha1(buf.data.tobytes()).hexdigest()
+		#print(hash_object.hexdigest())
+
 		shb = get_name(hb)
 		save(shb, buf)
 		self.data[x][y][z] = hb

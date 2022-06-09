@@ -17,7 +17,7 @@ from chunks import Chunks
 from hmap import Hmap 
 
 CHUNK_W, CHUNK_H, CHUNK_D = 32,32,32
-MAP_W, MAP_H, MAP_D = 8, 12, 8
+MAP_W, MAP_H, MAP_D = 1, 1, 1
 
 CHUNK_W2, CHUNK_D2 = CHUNK_W / 2, CHUNK_D / 2
 
