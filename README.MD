@@ -36,4 +36,4 @@ python3 main.py
 
 #(in windows: python main.py)
 
-#actions: move - WASD, up - Z, down - Q, rotate - press left mouse button and move mouse
+#actions: move - WASD, up - E, down - Q, rotate - press left mouse button and move mouse

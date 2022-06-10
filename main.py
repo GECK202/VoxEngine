@@ -21,29 +21,6 @@ from chunk import Chunk
 from mesh import Mesh
 from chunks import Chunks
 
-
-#vertices = array([
-#		-.5, -.5, 0, 0, 1, 0.75,
-#		.5, -.5, 0, 1, 1, 1,
-#		-.5, .5, 0, 0, 0, 0.5,
-		
-#		-.5, .5, 0, 0, 0, 0.5,
-#		.5, -.5, 0, 1, 1, 1,
-#		.5, .5, 0, 1, 0, 0.5], dtype=float32)
-
-#uv = 0.0625
-#v = 0
-#u = 2*uv
-
-#vertices = array([
-#		-.5, .5, -.5, u, v+uv, 1,
-#		.5, .5, .5, u+uv, v+uv, 1,
-#		-.5, .5, .5, u, v, 1,
-		
-#		-.5, .5, -.5, u, v, 1,
-#		.5, .5, .5, u+uv, v+uv, 1,
-#		.5, .5, -.5, u+uv, v, 1], dtype=float32)
-
 def main():
 	display_size = (800, 600)
 	
@@ -103,7 +80,7 @@ def main():
 		#meshes[i] = mesh
 
 
-	cam = Camera.init(vec3(64,3,64), radians(70))
+	cam = Camera.init(vec3(64,140,110), radians(70))
 
 	#model = translate(mat4(1.0), vec3(1, 0, 0))
 	#model = transpose(array(model))
@@ -120,7 +97,6 @@ def main():
 	camX = 0.0
 	camY = 0.0
 	clock = pg.time.Clock()
-	#w.going = False
 	while w.going:
 		cur_time = pg.time.get_ticks()
 		del_time = cur_time - last_time
@@ -187,7 +163,7 @@ def main():
 				meshes[i] = None
 			mesh = renderer.render(chunk)
 			meshes[i] = mesh
-			print("load block ",i,"%")
+			print("load blocks ",int((i + 1) * 100 / chunks.volume),"%")
 
 		GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
 

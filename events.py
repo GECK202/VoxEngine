@@ -58,7 +58,7 @@ class Events:
 		self.deltaY = 0.0
 		self.x = 0.0
 		self.y = 0.0
-		self._cursor_locked = False
+		self.cursor_locked = False
 		self._cursor_started = False
 		self.quit = False
 

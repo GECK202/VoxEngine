@@ -2,12 +2,8 @@ from PIL import Image
 import numpy as np
 import OpenGL.GL as GL
 
-def load_im(filename):
-	image = Image.open(filename)
-	return image
-
 def create_texture(filename):
-	im = load_im(filename)
+	im = Image.open(filename)
 	tex_id = GL.glGenTextures(1)
 	GL.glBindTexture(GL.GL_TEXTURE_2D, tex_id)
 	#GL.glPixelStorei(GL.GL_UNPACK_ALIGMENT, 1)
