@@ -1,34 +1,33 @@
+import ctypes
 
 import pygame as pg
 from window import Window
 from events import Events
+from shader import Shader
 
 import OpenGL.GL as GL
 
 from glm import vec3, vec4, mat4, radians, translate
+#from ogl3 import init_gl_rot, draw_cube, init_gl2, draw_2, shader_bind
 
-from numpy import array, zeros, transpose
+from numpy import array, eye, zeros, float32, uint32, transpose
+import time
 
 from texture import load_texture
-from shader import Shader
+from shader import Shader, _init_gl
 from camera import Camera
-from voxel_renderer import VoxelRenderer, render
+from voxel_renderer import VoxelRenderer
+from chunk import Chunk
+from mesh import Mesh
 from chunks import Chunks
-from hmap import Hmap 
-
-CHUNK_W, CHUNK_H, CHUNK_D = 32,32,32
-MAP_W, MAP_H, MAP_D = 1, 1, 1
-
-CHUNK_W2, CHUNK_D2 = CHUNK_W / 2, CHUNK_D / 2
-
-CV_W = ((MAP_W - 1) * CHUNK_W - MAP_W) // 2
-CV_D = ((MAP_D - 1) * CHUNK_D - MAP_D) // 2
 
 def main():
 	display_size = (800, 600)
-
+	
 	w = Window.init(display_size)
 	e = Events.init()
+	
+	#_init_gl("res/shaders/sh2.vert", "res/shaders/sh2.frag")
 
 	shader = Shader("res/shaders/sh2.vert", "res/shaders/sh2.frag")
 	if shader is None:
@@ -40,27 +39,64 @@ def main():
 		w.terminate()
 		exit()
 
-	#renderer = 
-	VoxelRenderer.init()
+
+	renderer = VoxelRenderer.init()#1024*1024*8)
+	#chunk = Chunk(0,0,0)
+
+	#mesh = Mesh(vertices, 6, array([3,2,1]))
+	#mesh = renderer.render(chunk)
 
 
-	print("Start load map...")
-	Hmap.init(10,8,10)
-	print("End load map. OK.")
-
-	print("Start create chunks...")
-	chunks = Chunks.init(MAP_W, MAP_H, MAP_D)
-	print("End create chunks. Ok.")
+	chunks = Chunks.init(2,2,2)
+	#print("chunks after init=",chunks.chunks)
 	meshes = zeros(chunks.volume, dtype=object)
 
-	cam = Camera.init(vec3(CHUNK_W * MAP_W / 2, MAP_H * CHUNK_H, CHUNK_D * MAP_D / 2), radians(70))
+	#closes[27]
+	#for i in range(chunks.volume):
+		#chunk = chunks.chunks[i]
+		#print("KKK=",i,"[",chunk,"]")
+		#if chunk.modified == False:
+		#	continue
+		#chunk.modified = False
+		#if not (meshes[i] is None):
+		#meshes[i] = None
+		#closes = [None] * 27
+		#for j in range(chunks.volume):
+		#	other = chunks.chunks[j]
+
+		#	ox = other.x - chunk.x
+		#	oy = other.y - chunk.y
+		#	oz = other.z - chunk.z
+
+		#	if (abs(ox) > 1 or abs(oy) > 1 or abs(oz) > 1):
+		#		continue
+
+		#	ox += 1
+		#	oy += 1
+		#	oz += 1
+		#	closes[(oy * 3 + oz) * 3 + ox] = other
+
+		#mesh = renderer.render(chunk)# (const Chunk**)closes);
+		#meshes[i] = mesh
+
+
+	cam = Camera.init(vec3(64,140,110), radians(70))
+
+	#model = translate(mat4(1.0), vec3(1, 0, 0))
+	#model = transpose(array(model))
+	
+	#projview = cam.get_m_proj_view()
+	#print(projview, "\n")
 
 	last_time = pg.time.get_ticks()
+	del_time = 0.0
 	speed = 0.02
+	#FPS = 30
+	#wait_time = int(1000/FPS) 
 
 	camX = 0.0
 	camY = 0.0
-
+	clock = pg.time.Clock()
 	while w.going:
 		cur_time = pg.time.get_ticks()
 		del_time = cur_time - last_time
@@ -69,85 +105,92 @@ def main():
 		if e.j_pressed(pg.K_ESCAPE) or e.quit:
 			w.going = False
 
-		e.cursor_locked = False
-		GL.glClearColor(0.5, 0.5, 0.5, 1)
+		#if (e.j_pressed(pg.K_TAB)):
+		#	e.toogleCursor()
+		e._cursor_locked = False
+		GL.glClearColor(0.5,0.5,0.5,1)
 		if e.clicked(1):
 			GL.glClearColor(0.3, 0.3, 0.3, 1)
-			e.cursor_locked = True
+			e._cursor_locked = True
 
-		pos_change = False
+		#if e.j_clicked(3):
+		#	GL.glClearColor(0.5, 0.5, 0.5, 1)
+
 		if e.pressed(pg.K_w):
 			cam.pos += cam.front * del_time * speed
-			pos_change = True
+			#print("w")
 
 		if e.pressed(pg.K_s):
 			cam.pos -= cam.front * del_time * speed
-			pos_change = True
+			#print("S")
+
 
 		if e.pressed(pg.K_a):
 			cam.pos -= cam.right * del_time * speed
-			pos_change = True
+			#print("A")
 
 		if e.pressed(pg.K_d):
 			cam.pos += cam.right * del_time * speed
-			pos_change = True
-
+			#print("D")
+			
 		if e.pressed(pg.K_q):
 			cam.pos -= cam.up * del_time * speed
-			pos_change = True
+			#print("Q")
 
-		if e.pressed(pg.K_e):
+		if e.pressed(pg.K_z):
 			cam.pos += cam.up * del_time * speed
-			pos_change = True
+			#print("Z")	
 
-		if e.cursor_locked:
+		if e._cursor_locked:
 			camY += -e.deltaY / w.display_size[1] * 4
 			camX += -e.deltaX / w.display_size[0] * 4
-			if camY < -radians(89.0):
+			if (camY < -radians(89.0)):
 				camY = -radians(89.0)
-			if camY > radians(89.0):
+			if (camY > radians(89.0)):
 				camY = radians(89.0)
 			cam.rotation = mat4(1.0)
 			cam.rotate(camY, camX, 0)
+			projview = cam.get_m_proj_view()
+			#pg.mouse.set_pos(w.display_size[0]/2, w.display_size[1]/2)
 
-		n = 0
+
 		for i in range(chunks.volume):
 			chunk = chunks.chunks[i]
-			if pos_change:
-				mx = cam.pos[0] + CV_W
-				mz = cam.pos[2] + CV_D
-				if chunk.x < mx:
-					chunk.x += MAP_W * CHUNK_W
-					chunk.modified = True
-			if not chunk.modified:
+			if chunk.modified == False:
 				continue
-			print("-load mesh", int(chunk.x/CHUNK_W), int(chunk.y/CHUNK_H), int(chunk.z/CHUNK_D))
-			n += 1
 			chunk.modified = False
-			chunk.full_up()
-			chunks.chunks[i] = chunk
 			if not (meshes[i] is None):
 				meshes[i] = None
-			mesh = render(chunk)
+			mesh = renderer.render(chunk)
 			meshes[i] = mesh
-		if n > 0:
-			print("Was modify", n, "chunks!")
+			print("load blocks ",int((i + 1) * 100 / chunks.volume),"%")
+
 		GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
 
 		shader.use()
+
+		#shader.uniform_matrix("model", model)
+		
 		shader.uniform_matrix("projview", cam.get_m_proj_view())
+		#shader.bind()
 		texture.bind()
 
+
 		for i in range(chunks.volume):
+			
 			chunk = chunks.chunks[i]
 			mesh = meshes[i]
-			vec = vec3(chunk.x, chunk.y, chunk.z)
+			vec = vec3(chunk.x*65+1.0, chunk.y*65+1.0, chunk.z*65+1.0)
+			#print("vec=", vec)
 			model = translate(mat4(1.0), vec)
 			model = transpose(array(model))
 			shader.uniform_matrix("model", model)
-			mesh.draw()
-		print("cycle")
+			mesh.draw()#GL_TRIANGLES);
+
+		#mesh.draw()#GL.GL_TRIANGLES)
+		#shader.draw()
 		w.flip()
+		#pg.time.wait(wait_time)
 		e.update()
 	w.terminate()
 
